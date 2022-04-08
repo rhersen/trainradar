@@ -35,13 +35,13 @@
   }
 </script>
 
-<svg class="root" viewBox="0 0 16 16">
+<svg class="root" viewBox="0 0 9 9">
   {#each locations as { code, name, east, north }}
     <circle
       class={delayClass(arrivals[code])}
       on:mouseover={handleMouseOver(code, name)}
-      cx={east - 10}
-      cy={70 - north}
+      cx={east - 11}
+      cy={64 - north}
     />
   {/each}
 </svg>
