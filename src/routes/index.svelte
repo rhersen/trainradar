@@ -1,6 +1,5 @@
 <script>
   export let locations;
-  export let arrivals;
 
   let hoverText;
 
@@ -10,16 +9,16 @@
     return (actual - advertised) * 1e-3;
   }
 
-  function handleMouseOver(code, name) {
+  function handleMouseOver(arrivals, name) {
     return () => {
-      if (arrivals[code]?.length === 1) {
-        const [arrival] = arrivals[code];
+      if (arrivals?.length === 1) {
+        const [arrival] = arrivals;
         const company = arrival.ProductInformation?.[0]?.Description;
         hoverText = `${company} ${
           arrival.AdvertisedTrainIdent
         } är ${delayInSeconds(arrival)} sekunder sent i ${name}`;
       } else {
-        hoverText = `${arrivals[code]?.length} tåg i ${name}`;
+        hoverText = `${arrivals?.length} tåg i ${name}`;
       }
     };
   }
@@ -36,10 +35,10 @@
 </script>
 
 <svg class="root" viewBox="0 0 9 9">
-  {#each locations as { code, name, east, north }}
+  {#each locations as { code, name, east, north, arrivals }}
     <circle
-      class={delayClass(arrivals[code])}
-      on:mouseover={handleMouseOver(code, name)}
+      class={delayClass(arrivals)}
+      on:mouseover={handleMouseOver(arrivals, name)}
       cx={east - 11}
       cy={64 - north}
     />

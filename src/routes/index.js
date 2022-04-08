@@ -28,17 +28,18 @@ export async function get({ params }) {
         body: { msg: responses[i].statusText },
       };
 
+  const arrivals = _.groupBy(
+    _.get(json[0], 'RESPONSE.RESULT.0.TrainAnnouncement'),
+    'LocationSignature'
+  );
+
   return {
     body: {
       locations: Object.entries(json[1]).map(
         ([code, { Geometry, AdvertisedShortLocationName: name }]) => {
           const [, east, north] = /([\d.]+) ([\d.]+)/.exec(Geometry.WGS84);
-          return { code, name, east, north };
+          return { code, name, east, north, arrivals: arrivals[code] };
         }
-      ),
-      arrivals: _.groupBy(
-        _.get(json[0], 'RESPONSE.RESULT.0.TrainAnnouncement'),
-        'LocationSignature'
       ),
     },
   };
