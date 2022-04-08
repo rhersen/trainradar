@@ -38,11 +38,26 @@ export async function get({ params }) {
       locations: Object.entries(json[1]).map(
         ([code, { Geometry, AdvertisedShortLocationName: name }]) => {
           const [, east, north] = /([\d.]+) ([\d.]+)/.exec(Geometry.WGS84);
-          return { code, name, east, north, arrivals: arrivals[code] };
+          return {
+            code,
+            name,
+            east,
+            north,
+            arrivals: arrivals[code],
+            delay: arrivals[code]
+              ? delayInSeconds(arrivals[code][0])
+              : undefined,
+          };
         }
       ),
     },
   };
+}
+
+function delayInSeconds(arrival) {
+  const actual = Date.parse(arrival.TimeAtLocationWithSeconds);
+  const advertised = Date.parse(arrival.AdvertisedTimeAtLocation);
+  return (actual - advertised) * 1e-3;
 }
 
 function getBody({ since }) {

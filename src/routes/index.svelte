@@ -3,29 +3,20 @@
 
   let hoverText;
 
-  function delayInSeconds(arrival) {
-    const actual = Date.parse(arrival.TimeAtLocationWithSeconds);
-    const advertised = Date.parse(arrival.AdvertisedTimeAtLocation);
-    return (actual - advertised) * 1e-3;
-  }
-
-  function handleMouseOver(arrivals, name) {
+  function handleMouseOver(arrivals, name, delay) {
     return () => {
       if (arrivals?.length === 1) {
         const [arrival] = arrivals;
         const company = arrival.ProductInformation?.[0]?.Description;
-        hoverText = `${company} ${
-          arrival.AdvertisedTrainIdent
-        } är ${delayInSeconds(arrival)} sekunder sent i ${name}`;
+        hoverText = `${company} ${arrival.AdvertisedTrainIdent} är ${delay} sekunder sent i ${name}`;
       } else {
         hoverText = `${arrivals?.length} tåg i ${name}`;
       }
     };
   }
 
-  function delayClass(arrivals) {
-    if (!arrivals || !arrivals.length) return 'passive';
-    const delay = delayInSeconds(arrivals[0]);
+  function delayClass(delay) {
+    if (delay === undefined) return 'no-trains';
     if (delay > 480) return 'delay-8';
     if (delay > 240) return 'delay-4';
     if (delay > 120) return 'delay-2';
@@ -35,10 +26,10 @@
 </script>
 
 <svg class="root" viewBox="0 0 9 9">
-  {#each locations as { code, name, east, north, arrivals }}
+  {#each locations as { code, name, east, north, arrivals, delay }}
     <circle
-      class={delayClass(arrivals)}
-      on:mouseover={handleMouseOver(arrivals, name)}
+      class={delayClass(delay)}
+      on:mouseover={handleMouseOver(arrivals, name, delay)}
       cx={east - 11}
       cy={64 - north}
     />
@@ -76,7 +67,7 @@
     fill: red;
   }
 
-  .passive {
+  .no-trains {
     r: 0.02;
     fill: darkgray;
   }
