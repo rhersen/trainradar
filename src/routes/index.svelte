@@ -2,7 +2,8 @@
   export let locations;
 </script>
 
-<h1>Welcome to SvelteKit</h1>
-<p>
-  {locations.Tul}
-</p>
+<svg width="100%" viewBox="0 0 16 16">
+  {#each locations as { east, north }}
+    <circle r=".04" cx={east - 10} cy={70 - north} />
+  {/each}
+</svg>
