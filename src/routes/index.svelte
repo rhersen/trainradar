@@ -1,5 +1,6 @@
 <script>
   export let locations;
+  export let arrivals;
 
   let station;
 
@@ -17,6 +18,7 @@
       on:mouseover={handleMouseOver(name)}
       cx={east - 17.5}
       cy={59.8 - north}
+      fill={arrivals[code] ? 'cyan' : 'lightgray'}
     />
   {/each}
 </svg>
@@ -29,6 +31,5 @@
 
   .dot {
     r: 0.005;
-    fill: lightgray;
   }
 </style>
