@@ -2,9 +2,9 @@
   export let locations;
 </script>
 
-<svg class="root" viewBox="0 0 16 16">
+<svg class="root" viewBox="0 0 1 1">
   {#each locations as { east, north }}
-    <circle class="dot" cx={east - 10} cy={70 - north} />
+    <circle class="dot" cx={east - 17.5} cy={59.8 - north} />
   {/each}
 </svg>
 
@@ -14,7 +14,7 @@
   }
 
   .dot {
-    r: 0.04;
+    r: 0.005;
     fill: lightgray;
   }
 </style>
