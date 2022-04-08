@@ -3,18 +3,18 @@
 
   let station;
 
-  function handleMouseOver(signature) {
+  function handleMouseOver(name) {
     return () => {
-      station = signature;
+      station = name;
     };
   }
 </script>
 
 <svg class="root" viewBox="0 0 1 1">
-  {#each locations as { signature, east, north }}
+  {#each locations as { code, name, east, north }}
     <circle
       class="dot"
-      on:mouseover={handleMouseOver(signature)}
+      on:mouseover={handleMouseOver(name)}
       cx={east - 17.5}
       cy={59.8 - north}
     />
