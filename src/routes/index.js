@@ -6,7 +6,7 @@ export async function get({ params }) {
     'https://api.trafikinfo.trafikverket.se/v2/data.json',
     {
       method: 'POST',
-      body: getBody({ since: '04:00' }),
+      body: getBody({ since: '15:00' }),
       headers: {
         'Content-Type': 'application/xml',
         Accept: 'application/json',
@@ -49,6 +49,12 @@ export async function get({ params }) {
       ),
     },
   };
+}
+
+function delayInSeconds(arrival) {
+  const actual = Date.parse(arrival.TimeAtLocationWithSeconds);
+  const advertised = Date.parse(arrival.AdvertisedTimeAtLocation);
+  return (actual - advertised) * 1e-3;
 }
 
 function getBody({ since }) {
