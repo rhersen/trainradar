@@ -6,7 +6,7 @@ export async function get({ params }) {
     'https://api.trafikinfo.trafikverket.se/v2/data.json',
     {
       method: 'POST',
-      body: getBody({ since: '16:00' }),
+      body: getBody({ since: '04:00' }),
       headers: {
         'Content-Type': 'application/xml',
         Accept: 'application/json',

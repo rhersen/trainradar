@@ -14,9 +14,10 @@
     return () => {
       if (arrivals[code]?.length === 1) {
         const [arrival] = arrivals[code];
-        hoverText = `Tåg ${arrival.AdvertisedTrainIdent} är ${delayInSeconds(
-          arrival
-        )} sekunder sent i ${name}`;
+        const company = arrival.ProductInformation?.[0]?.Description;
+        hoverText = `${company} ${
+          arrival.AdvertisedTrainIdent
+        } är ${delayInSeconds(arrival)} sekunder sent i ${name}`;
       } else {
         hoverText = `${arrivals[code]?.length} tåg i ${name}`;
       }
