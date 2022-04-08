@@ -44,20 +44,11 @@ export async function get({ params }) {
             east,
             north,
             arrivals: arrivals[code] ? arrivals[code] : [],
-            delay: arrivals[code]
-              ? delayInSeconds(arrivals[code][0])
-              : undefined,
           };
         }
       ),
     },
   };
-}
-
-function delayInSeconds(arrival) {
-  const actual = Date.parse(arrival.TimeAtLocationWithSeconds);
-  const advertised = Date.parse(arrival.AdvertisedTimeAtLocation);
-  return (actual - advertised) * 1e-3;
 }
 
 function getBody({ since }) {

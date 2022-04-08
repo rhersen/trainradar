@@ -3,7 +3,7 @@
 
   let hovered = { arrivals: [] };
 
-  function handleMouseOver(arrivals, name, delay) {
+  function handleMouseOver(arrivals, name) {
     return () => {
       if (arrivals)
         hovered = {
@@ -35,10 +35,10 @@
 </script>
 
 <svg class="root" viewBox="0 0 9 9">
-  {#each locations as { code, name, east, north, arrivals, delay }}
+  {#each locations as { code, name, east, north, arrivals }}
     <circle
-      class={delayClass(delay)}
-      on:mouseover={handleMouseOver(arrivals, name, delay)}
+      class={delayClass(arrivals[0] ? delayInSeconds(arrivals[0]) : undefined)}
+      on:mouseover={handleMouseOver(arrivals, name)}
       cx={east - 11}
       cy={64 - north}
     />
