@@ -1,18 +1,27 @@
 <script>
   export let locations;
 
-  let hoverText;
+  let hovered = { arrivals: [] };
 
   function handleMouseOver(arrivals, name, delay) {
     return () => {
-      if (arrivals?.length === 1) {
-        const [arrival] = arrivals;
-        const company = arrival.ProductInformation?.[0]?.Description;
-        hoverText = `${company} ${arrival.AdvertisedTrainIdent} är ${delay} sekunder sent i ${name}`;
-      } else {
-        hoverText = `${arrivals?.length} tåg i ${name}`;
-      }
+      if (arrivals)
+        hovered = {
+          arrivals: arrivals.map((arrival) => ({
+            ...arrival,
+            company: arrival.ProductInformation?.[0]?.Description,
+            delay: delayInSeconds(arrival),
+          })),
+          name,
+        };
+      else hovered = { arrivals: [] };
     };
+  }
+
+  function delayInSeconds(arrival) {
+    const actual = Date.parse(arrival.TimeAtLocationWithSeconds);
+    const advertised = Date.parse(arrival.AdvertisedTimeAtLocation);
+    return (actual - advertised) * 1e-3;
   }
 
   function delayClass(delay) {
@@ -35,7 +44,15 @@
     />
   {/each}
 </svg>
-<h1>{hoverText}</h1>
+<h1>{hovered.name}</h1>
+<ol>
+  {#each hovered.arrivals as arrival}
+    <li>
+      {arrival.company}
+      {arrival.AdvertisedTrainIdent} är {arrival.delay} sekunder sent
+    </li>
+  {/each}
+</ol>
 
 <style>
   .root {

@@ -43,7 +43,7 @@ export async function get({ params }) {
             name,
             east,
             north,
-            arrivals: arrivals[code],
+            arrivals: arrivals[code] ? arrivals[code] : [],
             delay: arrivals[code]
               ? delayInSeconds(arrivals[code][0])
               : undefined,
