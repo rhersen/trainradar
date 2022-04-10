@@ -5,15 +5,7 @@
 
   function handleMouseOver(arrivals, name) {
     return () => {
-      if (arrivals)
-        hovered = {
-          arrivals: arrivals.map((arrival) => ({
-            ...arrival,
-            company: arrival.ProductInformation?.[0]?.Description,
-            delay: delayInSeconds(arrival),
-          })),
-          name,
-        };
+      if (arrivals) hovered = { arrivals, name };
       else hovered = { arrivals: [] };
     };
   }
@@ -46,10 +38,13 @@
 </svg>
 <h1>{hovered.name}</h1>
 <ol>
-  {#each hovered.arrivals as arrival}
+  {#each hovered.arrivals as { company, AdvertisedTrainIdent, delay, from, to }}
     <li>
-      {arrival.company}
-      {arrival.AdvertisedTrainIdent} är {arrival.delay} sekunder sent
+      {company}
+      {AdvertisedTrainIdent}
+      från {from}
+      till {to}
+      är {delay} sekunder sent
     </li>
   {/each}
 </ol>

@@ -29,7 +29,15 @@ export async function get({ params }) {
       };
 
   const arrivals = _.groupBy(
-    _.get(json[0], 'RESPONSE.RESULT.0.TrainAnnouncement'),
+    _.get(json[0], 'RESPONSE.RESULT.0.TrainAnnouncement').map((arrival) => {
+      return {
+        ...arrival,
+        company: arrival.ProductInformation?.[0]?.Description,
+        delay: delayInSeconds(arrival),
+        from: locationName(arrival.FromLocation, json[1]),
+        to: locationName(arrival.ToLocation, json[1]),
+      };
+    }),
     'LocationSignature'
   );
 
@@ -68,6 +76,7 @@ function getBody({ since }) {
         </FILTER>
         <INCLUDE>AdvertisedTrainIdent</INCLUDE>
         <INCLUDE>AdvertisedTimeAtLocation</INCLUDE>
+        <INCLUDE>FromLocation</INCLUDE>
         <INCLUDE>LocationSignature</INCLUDE>
         <INCLUDE>ProductInformation</INCLUDE>
         <INCLUDE>TimeAtLocationWithSeconds</INCLUDE>
@@ -75,4 +84,13 @@ function getBody({ since }) {
     </QUERY>
 </REQUEST>
 `;
+}
+
+function locationName(location, locations) {
+  return _.join(
+    _.map(
+      _.map(location, 'LocationName'),
+      (l) => locations[l].AdvertisedShortLocationName
+    )
+  );
 }
