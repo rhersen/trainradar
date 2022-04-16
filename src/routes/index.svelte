@@ -10,6 +10,11 @@
     };
   }
 
+  function maxDelay(arrivals) {
+    if (!arrivals.length) return undefined;
+    return arrivals.map(delayInSeconds).reduce((a, b) => (a > b ? a : b));
+  }
+
   function delayInSeconds(arrival) {
     const actual = Date.parse(arrival.TimeAtLocationWithSeconds);
     const advertised = Date.parse(arrival.AdvertisedTimeAtLocation);
@@ -29,7 +34,7 @@
 <svg class="root" viewBox="0 0 9 9">
   {#each locations as { code, name, east, north, arrivals }}
     <circle
-      class={delayClass(arrivals[0] ? delayInSeconds(arrivals[0]) : undefined)}
+      class={delayClass(maxDelay(arrivals))}
       on:mouseover={handleMouseOver(arrivals, name)}
       cx={east - 11}
       cy={64 - north}
