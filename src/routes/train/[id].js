@@ -71,8 +71,8 @@ function getBody({ id }) {
     <QUERY sseurl='false' objecttype='TrainAnnouncement' schemaversion='1.6'>
         <FILTER>
             <EQ name='AdvertisedTrainIdent' value='${id}'/>
-            <LT name='AdvertisedTimeAtLocation' value='$dateadd(0.6:00:00)'/>
-            <GT name='AdvertisedTimeAtLocation' value='$dateadd(-0.6:00:00)'/>
+            <LT name='AdvertisedTimeAtLocation' value='$dateadd(0.12:00:00)'/>
+            <GT name='AdvertisedTimeAtLocation' value='$dateadd(-0.12:00:00)'/>
         </FILTER>
         <INCLUDE>AdvertisedTrainIdent</INCLUDE>
         <INCLUDE>AdvertisedTimeAtLocation</INCLUDE>

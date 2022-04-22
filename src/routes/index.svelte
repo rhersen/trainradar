@@ -2,6 +2,9 @@
   export let locations;
 
   let hovered = { arrivals: [] };
+  let zoom = 9;
+  let e = 11;
+  let n = 64;
 
   function handleMouseOver(arrivals, name) {
     return () => {
@@ -30,14 +33,6 @@
     return 'on-time';
   }
 
-  function x(east) {
-    return east - 11;
-  }
-
-  function y(north) {
-    return 64 - north;
-  }
-
   let lakes = [
     ['Vg', 'Vag', 'Gop', 'Lkp', 'Mst', 'Khn', 'Ksc', 'Sfl', 'Ål'],
     ['Hka', 'Bry', 'Kbg', 'Lmo', 'Mot', 'xVst'],
@@ -45,27 +40,33 @@
     ['Ör', 'Aä', 'Et', 'Hgö'],
     ['Tåv', 'Ös', 'Svk'],
     ['Mrc', 'Gså', 'Rv', 'Tlg', 'In', 'Vka'],
-  ].map((lake) =>
-    lake
-      .map((code) => `${x(locations[code].east)},${y(locations[code].north)}`)
-      .join(' ')
-  );
+  ];
 </script>
 
-<svg class="root" viewBox="0 0 9 9">
-  {#each lakes as points}
-    <polygon {points} fill="blue" />
+<svg class="root" viewBox="0 0 {zoom} {zoom}">
+  {#each lakes as lake}
+    <polygon
+      points={lake
+        .map(
+          (code) => `${locations[code].east - e},${n - locations[code].north}`
+        )
+        .join(' ')}
+      fill="blue"
+    />
   {/each}
 
   {#each Object.values(locations) as { code, name, east, north, arrivals }}
     <circle
       class={delayClass(maxDelay(arrivals))}
       on:mouseover={handleMouseOver(arrivals, name, code)}
-      cx={x(east)}
-      cy={y(north)}
+      cx={east - e}
+      cy={n - north}
     />
   {/each}
 </svg>
+<div>zoom<input type="range" max="16" bind:value={zoom} />{zoom}</div>
+<div>east<input type="range" min="10" max="25" bind:value={e} />{e}</div>
+<div>north<input type="range" min="55" max="85" bind:value={n} />{n}</div>
 <h1>{hovered.name}</h1>
 <ol>
   {#each hovered.arrivals as { company, AdvertisedTrainIdent, delay, from, to }}
