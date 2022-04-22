@@ -1,11 +1,12 @@
 import _ from 'lodash';
 
-export async function get() {
+export async function get({ params }) {
+  console.log(params);
   const announcementPromise = fetch(
     'https://api.trafikinfo.trafikverket.se/v2/data.json',
     {
       method: 'POST',
-      body: getBody({ since: '15:00' }),
+      body: getBody(params),
       headers: {
         'Content-Type': 'application/xml',
         Accept: 'application/json',
@@ -28,11 +29,7 @@ export async function get() {
       };
 
   const arrivals = _.groupBy(
-    _.filter(
-      _.get(json[0], 'RESPONSE.RESULT.0.TrainAnnouncement'),
-      ({ ProductInformation, FromLocation, ToLocation }) =>
-        ProductInformation?.length || FromLocation?.length || ToLocation?.length
-    ).map((arrival) => ({
+    _.get(json[0], 'RESPONSE.RESULT.0.TrainAnnouncement').map((arrival) => ({
       ...arrival,
       company: arrival.ProductInformation?.[0]?.Description,
       delay: delayInSeconds(arrival),
@@ -44,6 +41,7 @@ export async function get() {
 
   return {
     body: {
+      id: params.id,
       locations: _.mapValues(
         json[1],
         ({ Geometry, AdvertisedShortLocationName: name }, code) => {
@@ -66,14 +64,15 @@ function delayInSeconds(arrival) {
   return (actual - advertised) * 1e-3;
 }
 
-function getBody({ since }) {
+function getBody({ id }) {
   return `
 <REQUEST>
     <LOGIN authenticationkey='${process.env.TRAFIKVERKET_API_KEY}'/>
     <QUERY sseurl='false' objecttype='TrainAnnouncement' schemaversion='1.6'>
         <FILTER>
-            <GT name='TimeAtLocation' value='$dateadd(-0.00:${since})'/>
-            <EQ name='ActivityType' value='Ankomst'/>
+            <EQ name='AdvertisedTrainIdent' value='${id}'/>
+            <LT name='AdvertisedTimeAtLocation' value='$dateadd(0.6:00:00)'/>
+            <GT name='AdvertisedTimeAtLocation' value='$dateadd(-0.6:00:00)'/>
         </FILTER>
         <INCLUDE>AdvertisedTrainIdent</INCLUDE>
         <INCLUDE>AdvertisedTimeAtLocation</INCLUDE>
@@ -91,7 +90,7 @@ function locationName(location, locations) {
   return _.join(
     _.map(
       _.map(location, 'LocationName'),
-      (l) => locations[l].AdvertisedShortLocationName
+      (l) => locations[l]?.AdvertisedShortLocationName
     )
   );
 }

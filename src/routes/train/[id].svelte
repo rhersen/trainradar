@@ -1,14 +1,6 @@
 <script>
   export let locations;
-
-  let hovered = { arrivals: [] };
-
-  function handleMouseOver(arrivals, name) {
-    return () => {
-      if (arrivals) hovered = { arrivals, name };
-      else hovered = { arrivals: [] };
-    };
-  }
+  export let id;
 
   function maxDelay(arrivals) {
     if (!arrivals.length) return undefined;
@@ -58,26 +50,10 @@
   {/each}
 
   {#each Object.values(locations) as { code, name, east, north, arrivals }}
-    <circle
-      class={delayClass(maxDelay(arrivals))}
-      on:mouseover={handleMouseOver(arrivals, name, code)}
-      cx={x(east)}
-      cy={y(north)}
-    />
+    <circle class={delayClass(maxDelay(arrivals))} cx={x(east)} cy={y(north)} />
   {/each}
 </svg>
-<h1>{hovered.name}</h1>
-<ol>
-  {#each hovered.arrivals as { company, AdvertisedTrainIdent, delay, from, to }}
-    <li>
-      {company}
-      <a href="train/{AdvertisedTrainIdent}">{AdvertisedTrainIdent}</a>
-      från {from}
-      till {to}
-      är {delay} sekunder sent
-    </li>
-  {/each}
-</ol>
+<h1>{id}</h1>
 
 <style>
   .root {
