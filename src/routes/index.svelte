@@ -37,13 +37,30 @@
   function y(north) {
     return 64 - north;
   }
+
+  let lakes = [
+    ['Vg', 'Vag', 'Gop', 'Lkp', 'Mst', 'Khn', 'Ksc', 'Sfl', 'Ål'],
+    ['Hka', 'Bry', 'Kbg', 'Lmo', 'Mot', 'xVst'],
+    ['Cst', 'Söc', 'Sgs', 'Ksu', 'Kör', 'Kp', 'Ssh', 'Ksu', 'Vå', 'Kän'],
+    ['Ör', 'Aä', 'Et', 'Hgö'],
+    ['Tåv', 'Ös', 'Svk'],
+    ['Mrc', 'Gså', 'Rv', 'Tlg', 'In', 'Vka'],
+  ].map((lake) =>
+    lake
+      .map((code) => `${x(locations[code].east)},${y(locations[code].north)}`)
+      .join(' ')
+  );
 </script>
 
 <svg class="root" viewBox="0 0 9 9">
-  {#each Object.values(locations) as { name, east, north, arrivals }}
+  {#each lakes as points}
+    <polygon {points} fill="blue" />
+  {/each}
+
+  {#each Object.values(locations) as { code, name, east, north, arrivals }}
     <circle
       class={delayClass(maxDelay(arrivals))}
-      on:mouseover={handleMouseOver(arrivals, name)}
+      on:mouseover={handleMouseOver(arrivals, name, code)}
       cx={x(east)}
       cy={y(north)}
     />
