@@ -29,6 +29,14 @@
     if (delay > 60) return 'delay-1';
     return 'on-time';
   }
+
+  function x(east) {
+    return east - 11;
+  }
+
+  function y(north) {
+    return 64 - north;
+  }
 </script>
 
 <svg class="root" viewBox="0 0 9 9">
@@ -36,8 +44,8 @@
     <circle
       class={delayClass(maxDelay(arrivals))}
       on:mouseover={handleMouseOver(arrivals, name)}
-      cx={east - 11}
-      cy={64 - north}
+      cx={x(east)}
+      cy={y(north)}
     />
   {/each}
 </svg>
