@@ -29,20 +29,17 @@ export async function get({ params }) {
       };
 
   const arrivals = _.groupBy(
-    _.get(json[0], 'RESPONSE.RESULT.0.TrainAnnouncement')
-      .filter(
-        ({ ProductInformation, FromLocation, ToLocation }) =>
-          ProductInformation?.length ||
-          FromLocation?.length ||
-          ToLocation?.length
-      )
-      .map((arrival) => ({
-        ...arrival,
-        company: arrival.ProductInformation?.[0]?.Description,
-        delay: delayInSeconds(arrival),
-        from: locationName(arrival.FromLocation, json[1]),
-        to: locationName(arrival.ToLocation, json[1]),
-      })),
+    _.filter(
+      _.get(json[0], 'RESPONSE.RESULT.0.TrainAnnouncement'),
+      ({ ProductInformation, FromLocation, ToLocation }) =>
+        ProductInformation?.length || FromLocation?.length || ToLocation?.length
+    ).map((arrival) => ({
+      ...arrival,
+      company: arrival.ProductInformation?.[0]?.Description,
+      delay: delayInSeconds(arrival),
+      from: locationName(arrival.FromLocation, json[1]),
+      to: locationName(arrival.ToLocation, json[1]),
+    })),
     'LocationSignature'
   );
 
