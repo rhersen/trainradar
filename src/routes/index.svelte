@@ -40,7 +40,7 @@
 </script>
 
 <svg class="root" viewBox="0 0 9 9">
-  {#each locations as { code, name, east, north, arrivals }}
+  {#each Object.values(locations) as { name, east, north, arrivals }}
     <circle
       class={delayClass(maxDelay(arrivals))}
       on:mouseover={handleMouseOver(arrivals, name)}

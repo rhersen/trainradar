@@ -45,11 +45,11 @@ export async function get({ params }) {
 
   return {
     body: {
-      locations: Object.entries(json[1]).map(
-        ([code, { Geometry, AdvertisedShortLocationName: name }]) => {
+      locations: _.mapValues(
+        json[1],
+        ({ Geometry, AdvertisedShortLocationName: name }, code) => {
           const [, east, north] = /([\d.]+) ([\d.]+)/.exec(Geometry.WGS84);
           return {
-            code,
             name,
             east,
             north,
